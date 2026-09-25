@@ -40,7 +40,7 @@ window.TH = {
     payLink: "",
     payLinkLabel: "Pay securely with card",
     allowPayAtPickup: true,        // set false once payLink is live to require prepayment
-    taxRate: 0,                    // set e.g. 0.075 ONLY if your posted prices do not already include tax (confirm the rate with NC DOR)
+    taxRate: 0.075,               // Durham County (ZIP 27707): 4.75% NC + 2.00% county + 0.50% transit = 7.5%. Prices above are pre-tax.
     prepMinutes: 15,               // shown as the estimated wait
     leadTimeMinutes: 20            // earliest scheduled pickup from "now"
   },
@@ -85,7 +85,7 @@ window.TH = {
       { id: "dogdays", cat: "combos", name: "Dog Days", price: 10, combo: true,
         desc: "Hot dog + side + drink." },
 
-      { id: "punch", cat: "drinks", name: "The Turkey House Asiatic Punch", price: 6, star: true,
+      { id: "punch", cat: "drinks", name: "The Turkey House Asiatic Punch", price: 10, star: true,
         desc: "Our house punch, made with all-natural fruit. Ask for a sample." },
       { id: "tea", cat: "drinks", name: "Sweet Tea", price: null },
       { id: "lemonade", cat: "drinks", name: "Lemonade", price: null },
