@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Menu & Order Online · The Turkey House · Durham, NC</title>
+<meta name="description" content="Turkey burgers, smoked turkey BBQ, hot dogs, fried okra, combos and Asiatic Punch. Order online for pickup at 506 Burlington Ave, Durham.">
+<meta name="theme-color" content="#1b2aa6">
+<meta property="og:title" content="Menu & Order Online · The Turkey House · Durham, NC"><meta property="og:description" content="Turkey burgers, smoked turkey BBQ, hot dogs, fried okra, combos and Asiatic Punch. Order online for pickup at 506 Burlington Ave, Durham.">
+<meta property="og:image" content="assets/truck-brother-love.jpg"><meta property="og:type" content="website">
+<link rel="icon" href="assets/logo.png"><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="wrap">
+  <a class="brand" href="index.html" aria-label="The Turkey House home"><img src="assets/logo.png" alt="" width="46" height="46"><span>The Turkey<br>House</span></a>
+  <nav class="main" aria-label="Main">
+    <a href="menu.html" class="" aria-current="page">Menu</a><a href="about.html" class="">About</a><a href="join.html" class="">Join Us</a><a href="menu.html#order" class="cta">Order Now</a>
+  </nav>
+</div></header>
+<main id="main">
+
+<section style="padding-bottom:20px"><div class="wrap"><p class="kicker">Menu & online ordering</p><h1>Made fresh. Ordered easy.</h1>
+<p style="max-width:40em">Every item is turkey: no pork, no red meat. Build your order below, pick a time, and we’ll have it hot when you arrive.</p></div></section>
+<section style="padding-top:10px" id="order"><div class="wrap menu-layout">
+  <div id="menu-root"><noscript><p class="notice">Turn on JavaScript to order online, or call <a href="tel:+19843146485">(984) 314-6485</a>. Menu: Classic Turkey Burger $8 · Smoked Turkey BBQ Sandwich $8 · Hot Dog $6 · Fries $3 · Onion Rings $4 · Fried Okra $5 · Bean Pie $5 · Combos: The Gobbler $11, BBQ Bash $12, Dog Days $10.</p></noscript></div>
+  <aside class="cart" aria-live="polite"><h2>Your order</h2>
+    <ul id="cart-lines"></ul><div class="totals" id="cart-totals"></div>
+    <form id="order-form" class="hidden" style="margin-top:16px">
+      <div class="field"><label for="name">Your name</label><input id="name" name="name" required autocomplete="name"></div>
+      <div class="field"><label for="phone">Mobile phone</label><input id="phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel"></div>
+      <div class="field"><label for="pickup-day">Pickup day</label><select id="pickup-day" name="day"></select></div>
+      <div class="field"><label for="pickup-time">Pickup time</label><select id="pickup-time" name="time"></select></div>
+      <div class="field"><label for="car">Staying in your car? <small>(optional: color &amp; make)</small></label><input id="car" name="car" placeholder="Silver Honda Accord"></div>
+      <div class="field"><label for="notes">Notes or allergies <small>(optional)</small></label><textarea id="notes" name="notes" rows="2"></textarea></div>
+      <fieldset style="border:0;padding:0;margin:0 0 14px"><legend style="font-weight:700;font-size:.9rem;margin-bottom:6px">Payment</legend><div id="pay-choices"></div></fieldset>
+      <input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button class="btn" type="submit" style="width:100%">Place order</button>
+      <p class="empty" style="font-size:.85rem;margin:10px 0 0">By ordering you agree to pick up at the time you choose. Card details are never stored on this site.</p>
+    </form>
+    <div id="order-msg" style="margin-top:12px"></div>
+    <p class="empty" style="font-size:.9rem;margin:14px 0 0">Prefer the phone? <a data-th-href="tel" href="#" data-th="phoneDisplay">(984) 314-6485</a></p>
+  </aside>
+</div></section>
+
+</main>
+<footer class="site"><div class="wrap">
+  <div class="grid">
+    <div><h3>The Turkey House</h3><p>Lean, mean, Southern street cuisine.<br><em>Good food. Good people. Good times.</em></p></div>
+    <div><h3>Find us</h3><p><a data-th-href="maps" href="#"><span data-th="street">506 Burlington Ave</span><br><span data-th="city">Durham, NC 27707</span></a></p>
+      <p><a data-th-href="tel" href="#" data-th="phoneDisplay">(984) 314-6485</a></p></div>
+    <div><h3>Hours</h3><p data-th="hoursText">Thursday – Saturday, 11 AM – 7 PM</p><p class="js-status status" style="margin:0"></p></div>
+    <div><h3>More</h3><p><a href="menu.html#order">Order online</a><br><a href="about.html">Our story</a><br><a href="join.html">Work with us</a><br>
+      <a id="review-link" class="hidden" href="#" rel="noopener">Leave a review</a>
+      <a id="social-fb" class="hidden" href="#" rel="noopener">Facebook</a> <a id="social-ig" class="hidden" href="#" rel="noopener">Instagram</a></p></div>
+  </div>
+  <div class="fine">© <span class="js-year">2026</span> The Turkey House · Durham, North Carolina. Pork-free kitchen. Please tell us about any food allergies when you order.</div>
+</div></footer>
+<script src="config.js"></script><script src="site.js"></script>
+</body></html>
