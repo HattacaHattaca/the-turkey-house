@@ -37,6 +37,10 @@ window.TH = {
     /* HOW PEOPLE PAY ONLINE
        Paste a Square or Stripe payment link (both free to create, you pay only per-card fees).
        Leave "" to accept payment at pickup / by phone only. */
+    /* ORDER TRACKER (free): paste the Google Apps Script Web app URL here.
+       See order-tracker/README.md. Leave "" to skip; ordering works either way. */
+    trackerUrl: "",
+
     payLink: "",
     payLinkLabel: "Pay securely with card",
     allowPayAtPickup: true,        // set false once payLink is live to require prepayment

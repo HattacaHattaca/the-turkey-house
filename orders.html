@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Orders · The Turkey House</title>
+<meta name="theme-color" content="#1b2aa6">
+<link rel="icon" href="assets/logo.png"><link rel="stylesheet" href="styles.css">
+<style>
+  body{background:#f3f1e8}
+  .top{background:var(--blue);color:#fff;padding:12px 0;position:sticky;top:0;z-index:10}
+  .top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .top h1{color:#fff;font-size:1.3rem;margin:0}
+  .top .sp{margin-left:auto;display:flex;gap:10px;align-items:center;font-size:.9rem}
+  .top label{margin:0;font-weight:600;display:flex;gap:6px;align-items:center}
+  .top input{width:auto}
+  .oc{background:#fff;border-radius:14px;border-left:8px solid var(--gold);padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .oc.New{border-color:#e63946}.oc.Preparing{border-color:var(--gold)}.oc.Ready{border-color:var(--ok)}.oc.Done{border-color:#aaa;opacity:.75}
+  .oc header{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+  .code{font-family:var(--head);font-size:1.5rem;font-weight:800;color:var(--blue-d)}
+  .oc pre{font-family:var(--body);white-space:pre-wrap;margin:8px 0;font-size:1.05rem}
+  .meta{color:var(--muted);font-size:.95rem}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-weight:800;font-size:.75rem;background:#eee}
+  .tag.pay{background:#fff3c4}.tag.paid{background:#d9f3e3}
+  .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  #gate{max-width:380px;margin:80px auto;background:#fff;padding:26px;border-radius:16px}
+  .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#12142b;color:#fff;padding:10px 18px;border-radius:999px;display:none}
+</style></head>
+<body>
+<div id="gate">
+  <h1 style="font-size:1.5rem">Orders</h1>
+  <p class="empty">Enter the orders password.</p>
+  <form id="pin-form"><div class="field"><label for="pin">Password</label><input id="pin" type="password" autocomplete="current-password" required></div>
+  <button class="btn" style="width:100%">Open orders</button><p id="gate-msg" class="error hidden" style="margin-top:10px"></p></form>
+</div>
+<div id="app" class="hidden">
+  <div class="top"><div class="wrap"><h1>Orders <span id="count" class="tag" style="color:var(--ink)"></span></h1>
+    <div class="sp"><label><input type="checkbox" id="showdone"> Show finished</label><label><input type="checkbox" id="sound" checked> Sound</label><button class="btn small" id="refresh" type="button">Refresh</button></div></div></div>
+  <div class="wrap" style="padding-top:18px;padding-bottom:40px"><div id="list"></div>
+  <p class="empty" id="stamp" style="text-align:center"></p></div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var URL_=(window.TH&&TH.orders&&TH.orders.trackerUrl)||"";
+  var $=function(s){return document.querySelector(s)};
+  var esc=function(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
+  var pin=""; try{pin=sessionStorage.getItem("th_pin")||""}catch(e){}
+  var known=null, orders=[], timer=null;
+
+  function api(body){
+    return fetch(URL_,{method:"POST",body:JSON.stringify(body)}).then(function(r){return r.json()});
+  }
+  function toast(t){var el=$("#toast");el.textContent=t;el.style.display="block";setTimeout(function(){el.style.display="none"},2200)}
+  function beep(){
+    if(!$("#sound").checked)return;
+    try{var a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.25;o.start();setTimeout(function(){o.stop()},350);}catch(e){}
+  }
+  function isDone(s){return s==="Picked up"||s==="Cancelled"}
+  function when(t){try{return new Date(t).toLocaleString([], {weekday:"short",hour:"numeric",minute:"2-digit"})}catch(e){return ""}}
+
+  function render(){
+    var show=$("#showdone").checked, list=orders.filter(function(o){return show||!isDone(o.status)});
+    var open=orders.filter(function(o){return !isDone(o.status)}).length;
+    $("#count").textContent=open+" open";
+    document.title=(open?"("+open+") ":"")+"Orders · The Turkey House";
+    $("#list").innerHTML=list.length?list.map(function(o){
+      var st=o.status||"New", cls=isDone(st)?"Done":st, code=esc(o.code);
+      var sms="sms:"+encodeURIComponent(String(o.phone))+"?&body="+encodeURIComponent("Hi "+o.name+", your Turkey House order "+o.code+" is ready! 506 Burlington Ave.");
+      var btns="";
+      if(st==="New") btns+='<button class="btn small" data-s="Preparing" data-c="'+code+'">Start cooking</button>';
+      if(st==="New"||st==="Preparing") btns+='<button class="btn small blue" data-s="Ready" data-c="'+code+'">Ready ✓</button>';
+      if(st==="Ready") btns+='<a class="btn small" href="'+sms+'">Text: it’s ready</a><button class="btn small blue" data-s="Picked up" data-c="'+code+'">Picked up</button>';
+      if(!isDone(st)) btns+='<button class="btn small" style="background:#eee" data-s="Cancelled" data-c="'+code+'">Cancel</button>';
+      if(isDone(st)) btns+='<button class="btn small" style="background:#eee" data-s="New" data-c="'+code+'">Reopen</button>';
+      return '<article class="oc '+cls+'"><header><span class="code">'+code+'</span><span><span class="tag">'+esc(st)+'</span> <span class="tag '+(o.payment==="online"?"paid":"pay")+'">'+(o.payment==="online"?"Paying online":"Pay at pickup")+'</span></span></header>'+
+        '<div class="meta">'+esc(o.name)+' · <a href="tel:'+esc(o.phone)+'">'+esc(o.phone)+'</a> · placed '+when(o.time)+'</div>'+
+        '<div><strong>Pickup: '+esc(o.pickup)+'</strong>'+(o.car?' · car: '+esc(o.car):'')+'</div>'+
+        '<pre>'+esc(o.items)+'</pre><div><strong>$'+Number(o.total||0).toFixed(2)+'</strong>'+(o.notes?' · <em>'+esc(o.notes)+'</em>':'')+'</div><div class="acts">'+btns+'</div></article>';
+    }).join(""):'<p class="empty" style="text-align:center;margin-top:40px">No open orders right now.</p>';
+    $("#stamp").textContent="Updated "+new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit",second:"2-digit"});
+  }
+
+  function load(){
+    api({action:"list",pin:pin}).then(function(d){
+      if(d.error==="auth"){ logout("Wrong password."); return; }
+      if(!d.orders) return;
+      var codes={}; d.orders.forEach(function(o){codes[o.code]=1});
+      if(known){ var fresh=d.orders.filter(function(o){return !known[o.code]}); if(fresh.length){beep();toast("New order: "+fresh[0].code);} }
+      known=codes; orders=d.orders; render();
+    }).catch(function(){ $("#stamp").textContent="Can’t reach the order sheet. Retrying…"; });
+  }
+  function start(){
+    $("#gate").classList.add("hidden"); $("#app").classList.remove("hidden");
+    load(); clearInterval(timer); timer=setInterval(load,15000);
+  }
+  function logout(msg){
+    clearInterval(timer); pin=""; try{sessionStorage.removeItem("th_pin")}catch(e){}
+    $("#app").classList.add("hidden"); $("#gate").classList.remove("hidden");
+    var m=$("#gate-msg"); m.textContent=msg||""; m.classList.toggle("hidden",!msg);
+  }
+
+  if(!URL_){ $("#gate").innerHTML='<h1 style="font-size:1.4rem">Order tracker not set up yet</h1><p>Add the tracker URL to <code>config.js</code> (see order-tracker/README.md).</p>'; return; }
+  $("#pin-form").addEventListener("submit",function(e){e.preventDefault();pin=$("#pin").value;try{sessionStorage.setItem("th_pin",pin)}catch(er){} known=null; start();});
+  $("#refresh").addEventListener("click",load);
+  $("#showdone").addEventListener("change",render);
+  $("#list").addEventListener("click",function(e){
+    var b=e.target.closest("[data-s]"); if(!b)return;
+    var c=b.getAttribute("data-c"), s=b.getAttribute("data-s");
+    orders.forEach(function(o){ if(o.code===c) o.status=s; }); render();          // instant feedback
+    api({action:"status",pin:pin,code:c,status:s}).then(function(d){ if(d.error){toast("Couldn’t save — try again");load();} }).catch(function(){toast("Couldn’t save — try again");load();});
+  });
+  if(pin) start();
+})();
+</script>
+</body></html>

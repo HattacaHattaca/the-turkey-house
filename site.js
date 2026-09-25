@@ -78,6 +78,12 @@
     return Promise.resolve({ via: "sms" });
   }
 
+  /* Record the order in the tracker sheet. Never blocks or breaks an order. */
+  function track(rec) {
+    if (!O.trackerUrl) return;
+    try { fetch(O.trackerUrl, { method: "POST", body: JSON.stringify({ action: "create", order: rec }), keepalive: true }).catch(function () {}); } catch (e) {}
+  }
+
   /* ---------- menu + cart (menu.html) ---------- */
   var root = $("#menu-root");
   if (root) {
@@ -189,6 +195,7 @@
         "\nName: " + fd.get("name") + "\nPhone: " + fd.get("phone") + (car ? "\nCurbside car: " + car : "") +
         "\nPayment: " + (pay === "online" ? "paying online" : "pay at pickup") + (fd.get("notes") ? "\nNotes: " + fd.get("notes") : "");
       var btn = $("button[type=submit]", formEl), msg = $("#order-msg");
+      track({ code: code, name: fd.get("name"), phone: fd.get("phone"), pickup: pickup, items: lines, total: t.total, payment: pay === "online" ? "online" : "pickup", car: car, notes: fd.get("notes") || "" });
       btn.disabled = true; btn.textContent = "Sending…"; msg.innerHTML = "";
       send("Order " + code + " — " + fd.get("name") + " — " + money(t.total), { order_code: code, name: fd.get("name"), phone: fd.get("phone"), message: text }, text)
         .then(function (r) {
