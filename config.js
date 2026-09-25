@@ -32,7 +32,7 @@ window.TH = {
        2) Paste the key below. Orders + job applications then land in that inbox.
        Until a key is set, the site falls back to a pre-filled TEXT MESSAGE to the truck's
        phone, so ordering never breaks. */
-    web3formsKey: "",
+    web3formsKey: "a6cd33dc-2fae-4506-b5e6-0298f81a3529",
 
     /* HOW PEOPLE PAY ONLINE
        Paste a Square or Stripe payment link (both free to create, you pay only per-card fees).
