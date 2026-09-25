@@ -3,15 +3,15 @@
   --blue:#1b2aa6; --blue-d:#121c72; --blue-dd:#0b1249;
   --gold:#f6b400; --gold-l:#ffd24d; --cream:#fffaf0; --ink:#12142b; --muted:#585c7a;
   --line:#e6e0cf; --ok:#1f8a4c; --radius:16px;
-  --head:"Georgia","Times New Roman",serif;
-  --body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --head:"Aptos Display","Aptos",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --body:"Aptos",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:var(--body);color:var(--ink);background:var(--cream);line-height:1.6;font-size:17px}
 img{max-width:100%;display:block}
 a{color:var(--blue)}
-h1,h2,h3{font-family:var(--head);line-height:1.15;margin:0 0 .5em;color:var(--blue-d);text-transform:uppercase;letter-spacing:.02em}
+h1,h2,h3{font-family:var(--head);font-weight:800;line-height:1.15;margin:0 0 .5em;color:var(--blue-d);text-transform:uppercase;letter-spacing:.02em}
 h1{font-size:clamp(2.2rem,6vw,3.8rem)} h2{font-size:clamp(1.6rem,4vw,2.4rem)} h3{font-size:1.2rem}
 p{margin:0 0 1em}
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
